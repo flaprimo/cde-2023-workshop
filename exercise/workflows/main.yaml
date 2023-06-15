@@ -1,0 +1,48 @@
+main:
+    params: [event]
+    steps:
+        - init:
+              assign:
+                  - prefix: "cde2023-fprimo"
+                  - prefixBq: "cde2023_fprimo"
+                  - projectId: ${sys.get_env("GOOGLE_CLOUD_PROJECT_ID")}
+                  - datasetId: ${prefixBq + "_dataset"}
+                  - tableId: ${prefix + "-table"}
+                  - bucketName: ${prefix + "-bucket-export"}
+                  - message_base64: ${base64.decode(event.data.message.data)}
+                  - message: ${text.decode(message_base64)}
+        - log_event:
+              call: sys.log
+              args:
+                  text: ${event}
+                  severity: INFO
+        - import:
+              call: googleapis.workflowexecutions.v1.projects.locations.workflows.executions.run
+              args:
+                  workflow_id: ${prefix + "-wf-bqimport"}
+                  argument:
+                      projectId: ${projectId}
+                      datasetId: ${datasetId}
+                      tableId: ${tableId}
+                      blobName: ${message.blobName}
+              result: importResult
+        - log_event:
+              call: sys.log
+              args:
+                  text: ${importResult}
+                  severity: INFO
+        - export:
+              call: googleapis.workflowexecutions.v1.projects.locations.workflows.executions.run
+              args:
+                  workflow_id: ${prefix + "-wf-bqexport"}
+                  argument:
+                      projectId: ${projectId}
+                      bucketName: ${datasetId}
+                      table: ${projectId + "." + datasetId + "." + tableId}
+                      blobName: ${prefix + "-export"}
+              result: exportResult
+        - log_event:
+              call: sys.log
+              args:
+                  text: ${exportResult}
+                  severity: INFO

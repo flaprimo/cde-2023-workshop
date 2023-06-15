@@ -1,0 +1,16 @@
+main:
+  # args: projectId, datasetId, tableId, blobName
+  params: [args]
+  steps:
+    - init:
+        assign:
+          - table: ${args.projectId + "." + args.datasetId + "." + args.tableId}
+    - gcs-to-bq:
+        call: googleapis.bigquery.v2.jobs.query
+        args:
+          projectId: ${args.projectId}
+          body:
+            query: ${"LOAD DATA OVERWRITE " + table + " FROM FILES (format = 'CSV', uris = [" + args.blobName + "])"}
+            useLegacySql: false
+    - complete:
+        return: ${"import of " + args.blobName + " to " + table + " complete"}

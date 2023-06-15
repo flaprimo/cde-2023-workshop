@@ -2,6 +2,7 @@ locals {
   students = jsondecode(file("${path.module}/student_list.json"))
 
   apis = [
+    "pubsub.googleapis.com",
     "iam.googleapis.com",
     "storage.googleapis.com",
     "bigquery.googleapis.com",

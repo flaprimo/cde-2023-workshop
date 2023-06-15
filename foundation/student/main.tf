@@ -1,9 +1,14 @@
 locals {
   student_sac_roles = [
     "roles/storage.admin",
-    "roles/compute.osLogin",
-    "roles/iap.tunnelResourceAccessor",
+    "roles/bigquery.admin",
+    "roles/pubsub.admin",
+    "roles/workflow.admin",
+    "roles/iam.serviceAccountAdmin",
+    "roles/resourcemanager.projectIamAdmin",
     "roles/viewer",
+    # "roles/compute.osLogin",
+    # "roles/iap.tunnelResourceAccessor"
   ]
 }
 
