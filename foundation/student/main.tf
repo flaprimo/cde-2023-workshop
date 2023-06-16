@@ -12,6 +12,11 @@ locals {
     # "roles/compute.osLogin",
     # "roles/iap.tunnelResourceAccessor"
   ]
+  student_roles = [
+    "roles/viewer",
+    "roles/storage.admin",
+    "roles/bigquery.dataViewer"
+  ]
 }
 
 # Create bucket for storing terraform state
@@ -29,13 +34,22 @@ resource "google_service_account" "student_sac_tf" {
   display_name = "Student Service Account for Terraform - ${var.student.name}"
 }
 
-# Assign roles to students
+# Assign roles to student service accounts
 resource "google_project_iam_member" "student_prj_roles" {
   for_each = toset(local.student_sac_roles)
 
   project = var.project_id
   role    = each.key
   member  = google_service_account.student_sac_tf.member
+}
+
+# Assign roles to student accounts
+resource "google_project_iam_member" "student_principal_prj_roles" {
+  for_each = toset(local.student_roles)
+
+  project = var.project_id
+  role    = each.key
+  member  = "user:${var.student.email}"
 }
 
 # Assign roles to users for SAC impersonation
