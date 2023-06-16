@@ -4,6 +4,7 @@ locals {
   apis = [
     "pubsub.googleapis.com",
     "iam.googleapis.com",
+    "eventarc.googleapis.com",
     "storage.googleapis.com",
     "bigquery.googleapis.com",
     "workflows.googleapis.com",

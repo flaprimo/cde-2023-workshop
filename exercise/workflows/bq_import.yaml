@@ -5,12 +5,23 @@ main:
     - init:
         assign:
           - table: ${args.projectId + "." + args.datasetId + "." + args.tableId}
+          - query: ${"LOAD DATA OVERWRITE `" + table + "` FROM FILES (format = 'CSV', uris = ['gs://" + args.blobName + "'])"}
+    - log_event:
+        call: sys.log
+        args:
+            text: ${args}
+            severity: INFO
+    - log_query:
+        call: sys.log
+        args:
+            text: ${query}
+            severity: INFO
     - gcs-to-bq:
         call: googleapis.bigquery.v2.jobs.query
         args:
           projectId: ${args.projectId}
           body:
-            query: ${"LOAD DATA OVERWRITE " + table + " FROM FILES (format = 'CSV', uris = [" + args.blobName + "])"}
+            query: ${query}
             useLegacySql: false
     - complete:
         return: ${"import of " + args.blobName + " to " + table + " complete"}

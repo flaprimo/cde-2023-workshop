@@ -4,13 +4,13 @@ main:
   steps:
     - init:
         assign:
-          - query: ${"select * from " + args.table}
+          - query: ${"SELECT * FROM `" + args.table + "`"}
     - bigquery-table-to-gcs:
         call: googleapis.bigquery.v2.jobs.query
         args:
           projectId: ${args.projectId}
           body:
-            query: ${"EXPORT DATA OPTIONS( uri='gs://" + args.bucketName + "/'||current_date()||'/" + args.blobName + "-*.json', format='json', overwrite=true, header=true) AS " + query}
+            query: ${"EXPORT DATA OPTIONS( uri='gs://" + args.bucketName + "/'||current_date()||'/" + args.blobName + "-*.json', format='json', overwrite=true) AS " + query}
             useLegacySql: false
     - complete:
         return: ${"export of " + args.tableId + " to " + args.bucketName + " complete"}

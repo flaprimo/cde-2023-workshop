@@ -10,11 +10,11 @@ main:
                   - tableId: ${prefix + "-table"}
                   - bucketName: ${prefix + "-bucket-export"}
                   - message_base64: ${base64.decode(event.data.message.data)}
-                  - message: ${text.decode(message_base64)}
+                  - message: ${json.decode(message_base64)}
         - log_event:
               call: sys.log
               args:
-                  text: ${event}
+                  text: ${json.encode_to_string(message)}
                   severity: INFO
         - import:
               call: googleapis.workflowexecutions.v1.projects.locations.workflows.executions.run
@@ -24,9 +24,9 @@ main:
                       projectId: ${projectId}
                       datasetId: ${datasetId}
                       tableId: ${tableId}
-                      blobName: ${message.blobName}
+                      blobName: ${message.bucket + "/" + message.name}
               result: importResult
-        - log_event:
+        - log_import:
               call: sys.log
               args:
                   text: ${importResult}
@@ -41,7 +41,7 @@ main:
                       table: ${projectId + "." + datasetId + "." + tableId}
                       blobName: ${prefix + "-export"}
               result: exportResult
-        - log_event:
+        - log_export:
               call: sys.log
               args:
                   text: ${exportResult}

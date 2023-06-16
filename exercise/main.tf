@@ -6,8 +6,10 @@ locals {
     "bqexport" : file("${local.workflows_path}/bq_export.yaml")
   }
   roles_sac_workflow = [
+    "roles/logging.logWriter",
     "roles/bigquery.dataEditor",
-    "roles/storage.objectEditor",
+    "roles/bigquery.jobUser",
+    "roles/storage.objectAdmin",
     "roles/workflows.invoker"
   ]
   roles_sac_eventarc = [
@@ -100,7 +102,7 @@ resource "google_project_iam_member" "roles_sac_eventarc" {
 
   project = var.project_id
   role    = each.key
-  member  = google_service_account.sac_workflow.member
+  member  = google_service_account.sac_eventarc.member
 }
 
 resource "google_eventarc_trigger" "eventarc" {

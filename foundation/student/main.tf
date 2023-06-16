@@ -3,9 +3,11 @@ locals {
     "roles/storage.admin",
     "roles/bigquery.admin",
     "roles/pubsub.admin",
-    "roles/workflow.admin",
+    "roles/workflows.admin",
     "roles/iam.serviceAccountAdmin",
     "roles/resourcemanager.projectIamAdmin",
+    "roles/eventarc.admin",
+    "roles/iam.serviceAccountUser",
     "roles/viewer",
     # "roles/compute.osLogin",
     # "roles/iap.tunnelResourceAccessor"
