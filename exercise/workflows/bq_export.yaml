@@ -13,4 +13,4 @@ main:
             query: ${"EXPORT DATA OPTIONS( uri='gs://" + args.bucketName + "/'||current_date()||'/" + args.blobName + "-*.json', format='json', overwrite=true) AS " + query}
             useLegacySql: false
     - complete:
-        return: ${"export of " + args.tableId + " to " + args.bucketName + " complete"}
+        return: ${"export of " + args.table + " to " + args.bucketName + " complete"}

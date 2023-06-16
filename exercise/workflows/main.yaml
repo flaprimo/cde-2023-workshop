@@ -37,7 +37,7 @@ main:
                   workflow_id: ${prefix + "-wf-bqexport"}
                   argument:
                       projectId: ${projectId}
-                      bucketName: ${bucketname}
+                      bucketName: ${bucketName}
                       table: ${projectId + "." + datasetId + "." + tableId}
                       blobName: ${prefix + "-export"}
               result: exportResult
